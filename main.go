@@ -10,6 +10,7 @@ import (
 )
 
 var (
+	courtesyOf      = flag.String("courtesy-of", "Division of Forestry, Bureau of Natural Resources, Connecticut Department of Energy and Environmental Protection", "Courtesy attribution text")
 	fireDangerLevel = flag.String("level", "HIGH", "LOW/MEDIUM/HIGH/EXTREME")
 	outputFile      = flag.String("out", "danger.png", "Output file name")
 )
@@ -60,6 +61,7 @@ func main() {
 		dc.DrawStringAnchored(*fireDangerLevel, 1200/2, 630/2, 0.5, 0.5)
 	}
 
+	// Background rounded rectangle behind courtesy text
 	{
 		dc.Push()
 		dc.SetHexColor("#FFFFFF")
@@ -74,7 +76,7 @@ func main() {
 			panic(err)
 		}
 		dc.SetHexColor("#000000")
-		dc.DrawStringAnchored("Courtesy of: Division of Forestry, Bureau of Natural Resources, Connecticut Department of Energy and Environmental Protection", 1200/2, 600, 0.5, 1)
+		dc.DrawStringAnchored("Courtesy of: "+*courtesyOf, 1200/2, 600, 0.5, 1)
 	}
 
 	err := dc.SavePNG(*outputFile)
