@@ -12,7 +12,7 @@ import (
 
 var (
 	//go:embed resources/*
-	fs embed.FS
+	embedfs embed.FS
 
 	courtesyOf      = flag.String("courtesy-of", "Division of Forestry, Bureau of Natural Resources, Connecticut Department of Energy and Environmental Protection", "Courtesy attribution text")
 	fireDangerLevel = flag.String("level", "HIGH", "LOW/MEDIUM/HIGH/EXTREME")
@@ -28,7 +28,7 @@ func main() {
 	dc.Fill()
 
 	{
-		bg, err := gg.LoadJPGFS(fs, "resources/fire-bg.jpg")
+		bg, err := gg.LoadJPGFS(embedfs, "resources/fire-bg.jpg")
 		if err != nil {
 			panic(err)
 		}
@@ -39,7 +39,7 @@ func main() {
 	{
 		text := fmt.Sprintf("Fire Danger Level for %s is", time.Now().Format("Monday, Jan 2, 2006"))
 		dc.SetHexColor("#FFFFFF")
-		if err := dc.LoadFontFaceFS(fs, "resources/DejaVuSans.ttf", 40); err != nil {
+		if err := dc.LoadFontFaceFS(embedfs, "resources/DejaVuSans.ttf", 40); err != nil {
 			panic(err)
 		}
 		dc.DrawStringAnchored(text, 1200/2, 30, 0.5, 0.5)
@@ -56,7 +56,7 @@ func main() {
 		case "LOW":
 			dc.SetHexColor("#0000FF")
 		}
-		if err := dc.LoadFontFaceFS(fs, "resources/DejaVuSans-Bold.ttf", 128); err != nil {
+		if err := dc.LoadFontFaceFS(embedfs, "resources/DejaVuSans-Bold.ttf", 128); err != nil {
 			panic(err)
 		}
 		dc.SetHexColor("#FFFFFF")
@@ -76,7 +76,7 @@ func main() {
 	}
 
 	{
-		if err := dc.LoadFontFaceFS(fs, "resources/DejaVuSans.ttf", 16); err != nil {
+		if err := dc.LoadFontFaceFS(embedfs, "resources/DejaVuSans.ttf", 16); err != nil {
 			panic(err)
 		}
 		dc.SetHexColor("#000000")
