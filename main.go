@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"image/color"
+	"os"
 	"time"
 
 	"github.com/jbuchbinder/gg"
@@ -20,6 +21,20 @@ var (
 )
 
 func main() {
+	flag.Parse()
+	switch *fireDangerLevel {
+	case "EXTREME":
+		break
+	case "HIGH":
+		break
+	case "MEDIUM":
+		break
+	case "LOW":
+		break
+	default:
+		flag.PrintDefaults()
+		os.Exit(1)
+	}
 	dc := gg.NewContext(1200, 630)
 
 	// Background
@@ -28,24 +43,44 @@ func main() {
 	dc.Fill()
 
 	{
-		bg, err := gg.LoadJPGFS(embedfs, "resources/fire-bg.jpg")
+		var bgImage string
+		switch *fireDangerLevel {
+		case "EXTREME":
+			bgImage = "resources/high.jpg"
+		case "HIGH":
+			bgImage = "resources/high.jpg"
+		case "MEDIUM":
+			bgImage = "resources/medium.jpg"
+		case "LOW":
+			bgImage = "resources/low.jpg"
+		default:
+			panic("Invalid fire danger level")
+		}
+		bg, err := gg.LoadJPGFS(embedfs, bgImage)
 		if err != nil {
 			panic(err)
 		}
-		h := bg.Bounds().Size().Y
-		dc.DrawImage(bg, 0, 630-h)
+		//h := bg.Bounds().Size().Y
+		dc.DrawImage(bg, 0, 0) //630-h)
 	}
 
 	{
 		text := fmt.Sprintf("Fire Danger Level for %s is", time.Now().Format("Monday, Jan 2, 2006"))
-		dc.SetHexColor("#FFFFFF")
-		if err := dc.LoadFontFaceFS(embedfs, "resources/DejaVuSans.ttf", 40); err != nil {
+		if err := dc.LoadFontFaceFS(embedfs, "resources/DejaVuSans-Bold.ttf", 40); err != nil {
 			panic(err)
 		}
+		dc.SetHexColor("#000000")
+		dc.DrawStringAnchored(text, 1200/2+4, 30+4, 0.5, 0.5)
+		dc.SetHexColor("#FFFFFF")
 		dc.DrawStringAnchored(text, 1200/2, 30, 0.5, 0.5)
 	}
 
 	{
+		if err := dc.LoadFontFaceFS(embedfs, "resources/DejaVuSans-Bold.ttf", 128); err != nil {
+			panic(err)
+		}
+		dc.SetHexColor("#FFFFFF")
+		dc.DrawStringAnchored(*fireDangerLevel, 1200/2+5, 630/2+5, 0.5, 0.5)
 		switch *fireDangerLevel {
 		case "EXTREME":
 			dc.SetHexColor("#FF0000")
@@ -56,12 +91,6 @@ func main() {
 		case "LOW":
 			dc.SetHexColor("#0000FF")
 		}
-		if err := dc.LoadFontFaceFS(embedfs, "resources/DejaVuSans-Bold.ttf", 128); err != nil {
-			panic(err)
-		}
-		dc.SetHexColor("#FFFFFF")
-		dc.DrawStringAnchored(*fireDangerLevel, 1200/2+5, 630/2+5, 0.5, 0.5)
-		dc.SetHexColor("#FF0000")
 		dc.DrawStringAnchored(*fireDangerLevel, 1200/2, 630/2, 0.5, 0.5)
 	}
 
